@@ -31,8 +31,8 @@
    <string>复读机</string>
   </property>
   <property name="windowIcon">
-   <iconset>
-    <normaloff>滑稽32x.png</normaloff>滑稽32x.png</iconset>
+   <iconset resource="resource.qrc">
+    <normaloff>:/icon/hj128x.ico</normaloff>:/icon/hj128x.ico</iconset>
   </property>
   <property name="windowOpacity">
    <double>0.900000000000000</double>
@@ -313,6 +313,8 @@
   <tabstop>pushButton_about</tabstop>
   <tabstop>pushButton_aboutQt</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="resource.qrc"/>
+ </resources>
  <connections/>
 </ui>

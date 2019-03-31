@@ -5,9 +5,8 @@ SoundAnalysis::SoundAnalysis(QObject *parent) : QObject(parent){
 	m_pTimer->callOnTimeout([&]() {
 		analyse();
 	});
-	lastAve = 0;
 	state = 0;
-	competition = 0;
+	sec = 5;
 }
 
 SoundAnalysis::~SoundAnalysis() {
@@ -15,12 +14,10 @@ SoundAnalysis::~SoundAnalysis() {
 }
 
 void SoundAnalysis::onDataReceived(const unsigned char * pData, qint64 len) {
-	QMutexLocker locker(&mutex);
 	m_buffer.append(reinterpret_cast<const char *>(pData), len);
 }
 
 void SoundAnalysis::onFormatChanged(WAVEFORMATEX *pwfx) {
-	QMutexLocker locker(&mutex);
 	m_pwfx = pwfx;
 	channelBytes = pwfx->nBlockAlign / pwfx->nChannels;
 	m_buffer.clear();
@@ -32,44 +29,32 @@ void SoundAnalysis::stop() {
 }
 
 void SoundAnalysis::analyse() {
-	QMutexLocker locker(&mutex);
-	if (m_buffer.size() < int(m_pwfx->nAvgBytesPerSec * 3)) return;
-	double ave = getAve(m_buffer.right(m_pwfx->nAvgBytesPerSec * 3));
-	if (ave <= 2) {
-		switch (state) {
-			case 0:
-				m_buffer.clear();
-				return;
-			case 1:
-				__end();
-				return;
-		}
+	if (m_buffer.size() < int(m_pwfx->nAvgBytesPerSec * sec)) return;
+	double ave = getAve(m_buffer.right(m_pwfx->nAvgBytesPerSec * sec));
+	if (ave > 80) {
+		__start();
+	} else {
+		__end();
 	}
-	if (ave == lastAve) return;
-	int sign = ave > lastAve ? 1 : -1;
-	int diff = qAbs(ave - lastAve);
-    competition += sign * log10(1 + diff * diff);
-	if (competition > 5) __start();
-	else if (competition < -5) __end();
-	lastAve = ave;
 }
 
 void SoundAnalysis::__start() {
-	if (state != 0) return;
-	emit soundStart();
-	state = 1;
-	competition = 0;
-	lastAve = 0;
+	if (state == 0) {
+		m_buffer = m_buffer.right(m_pwfx->nAvgBytesPerSec * sec);
+		emit soundStart();
+		state = 1;
+	}
 }
 
 void SoundAnalysis::__end() {
-	if (state != 1) return;
-	emit soundEnd(m_buffer);
-	state = 0;
-	competition = 0;
-	lastAve = 0;
-	m_pTimer->stop();
-	m_buffer.clear();
+	if (state == 1) {
+		m_pTimer->stop();
+		emit soundEnd(m_buffer);
+		m_buffer.clear();
+		state = 0;
+	}else if (state == 0) {
+		m_buffer = m_buffer.right(m_pwfx->nAvgBytesPerSec * sec);
+	}
 }
 
 double SoundAnalysis::getAve(const QByteArray &bytearray) {

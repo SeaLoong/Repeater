@@ -47,6 +47,7 @@ void AutoRepeat::stop() {
 	if (m_pAudioRender->isRendering()) {
 		m_pAudioRender->stop();
 	}
+	m_pSoundAnalysis->stop();
 }
 
 bool AutoRepeat::isRunning() const {

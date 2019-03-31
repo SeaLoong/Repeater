@@ -8,7 +8,6 @@ Widget::Widget(QWidget *parent) :
 	area = new RenderArea(this);
 	ui->subWidget->layout()->addWidget(area);
 	setWindowFlags(Qt::WindowStaysOnTopHint);
-	setWindowFlags(Qt::MSWindowsFixedSizeDialogHint);
 
 	capturing = playing = false;
 	ap_checked = false;

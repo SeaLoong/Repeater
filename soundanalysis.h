@@ -1,7 +1,6 @@
 #ifndef SOUNDANALYSIS_H
 #define SOUNDANALYSIS_H
 
-#include <QMutex>
 #include "global.h"
 
 class SoundAnalysis : public QObject {
@@ -28,17 +27,16 @@ private:
 	void __start();
 	void __end();
 
+	int sec;
+
 	quint32 channelBytes;
 
-	QMutex mutex;
 	WAVEFORMATEX *m_pwfx;
 
 	QByteArray m_buffer;
 	QTimer *m_pTimer;
 
-	double lastAve;
 	int state;
-	double competition;
 };
 
 #endif // SOUNDANALYSIS_H

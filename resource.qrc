@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/icon">
+        <file>hj128x.ico</file>
+    </qresource>
+</RCC>

@@ -1,4 +1,4 @@
-#include "soundanalysis.h"
+#include "SoundAnalysis.h"
 
 SoundAnalysis::SoundAnalysis(QObject *parent) : QObject(parent){
 	m_pTimer = new QTimer(this);
@@ -6,7 +6,7 @@ SoundAnalysis::SoundAnalysis(QObject *parent) : QObject(parent){
 		analyse();
 	});
 	state = 0;
-	sec = 5;
+	sec = 3;
 }
 
 SoundAnalysis::~SoundAnalysis() {
@@ -21,11 +21,11 @@ void SoundAnalysis::onFormatChanged(WAVEFORMATEX *pwfx) {
 	m_pwfx = pwfx;
 	channelBytes = pwfx->nBlockAlign / pwfx->nChannels;
 	m_buffer.clear();
-	m_pTimer->start(1000);
+	m_pTimer->start(500);
 }
 
 void SoundAnalysis::stop() {
-	m_pTimer->stop();
+	if (m_pTimer != nullptr && m_pTimer->isActive()) m_pTimer->stop();
 }
 
 void SoundAnalysis::analyse() {
@@ -65,7 +65,7 @@ double SoundAnalysis::getAve(const QByteArray &bytearray) {
 		double nChannelsAve = 0;
 		for (quint16 j = 0; j < m_pwfx->nChannels; ++j, ptr += channelBytes) {
 			qint16 value = qAbs(*reinterpret_cast<const qint16*>(ptr));
-			nChannelsAve += value;
+			nChannelsAve += qMin(value, maxAmplitude);
 		}
 		nChannelsAve /= m_pwfx->nChannels; // 一个块的所有通道的平均声音
 		ave += nChannelsAve;

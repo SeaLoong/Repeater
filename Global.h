@@ -1,7 +1,7 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-#include <Windows.h>
+#include <qt_windows.h>
 #include <mmdeviceapi.h>
 #include <Audioclient.h>
 

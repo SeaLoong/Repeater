@@ -1,4 +1,4 @@
-#include "audiomanager.h"
+#include "AudioManager.h"
 
 AudioManager::AudioManager(QObject *parent) : QObject(parent) {
 	m_pAudioCapture = new AudioCapture(this);
@@ -26,10 +26,6 @@ void AudioManager::startCapture() {
 }
 
 void AudioManager::stopCapture() {
-	if (!m_pAudioCapture->isCapturing()) {
-		emit error("No Capturing!");
-		return;
-	}
 	m_pAudioCapture->stop();
 	m_pAudioRender->clear();
 	m_pAudioRender->write(m_pAudioCapture->read());
@@ -41,10 +37,6 @@ bool AudioManager::isCapturing() const {
 
 
 void AudioManager::startRender() {
-	if (!m_pAudioRender->canRender()) {
-		emit error("No captured stream!");
-		return;
-	}
 	m_pAudioRender->start();
 }
 

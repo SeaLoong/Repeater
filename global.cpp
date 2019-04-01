@@ -1,5 +1,5 @@
 
-#include "global.h"
+#include "Global.h"
 
 IMMDevice* GetDefaultDevice(EDataFlow dataFlow) {
 	IMMDevice* pDevice = nullptr;

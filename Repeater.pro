@@ -28,27 +28,31 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-    widget.cpp \
-    renderarea.cpp \
-    audiocapture.cpp \
-    audiomanager.cpp \
-    audiorender.cpp \
-    autorepeat.cpp \
-    global.cpp \
-    soundanalysis.cpp
+    Widget.cpp \
+    RenderArea.cpp \
+    AudioCapture.cpp \
+    AudioManager.cpp \
+    AudioRender.cpp \
+    AutoRepeat.cpp \
+    Global.cpp \
+    SoundAnalysis.cpp \
+    MyGlobalShortCut/MyGlobalShortCut.cpp \
+    MyGlobalShortCut/MyWinEventFilter.cpp
 
 HEADERS += \
-    widget.h \
-    renderarea.h \
-    audiocapture.h \
-    audiomanager.h \
-    audiorender.h \
-    autorepeat.h \
-    global.h \
-    soundanalysis.h
+    AudioCapture.h \
+    AudioManager.h \
+    AudioRender.h \
+    AutoRepeat.h \
+    Global.h \
+    RenderArea.h \
+    SoundAnalysis.h \
+    Widget.h \
+    MyGlobalShortCut/MyGlobalShortCut.h \
+    MyGlobalShortCut/MyWinEventFilter.h
 
 FORMS += \
-    widget.ui
+    Widget.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -2,9 +2,9 @@
 #define AUTOREPEAT_H
 
 #include <QObject>
-#include "audiocapture.h"
-#include "audiorender.h"
-#include "soundanalysis.h"
+#include "AudioCapture.h"
+#include "AudioRender.h"
+#include "SoundAnalysis.h"
 
 class AutoRepeat : public QObject {
 	Q_OBJECT

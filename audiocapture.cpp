@@ -1,4 +1,4 @@
-#include "audiocapture.h"
+#include "AudioCapture.h"
 
 AudioCapture::AudioCapture(QObject *parent) : QObject(parent) {
 	m_pAudioCaptureThread = nullptr;

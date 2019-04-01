@@ -1,8 +1,8 @@
-#include "autorepeat.h"
+#include "AutoRepeat.h"
 
 AutoRepeat::AutoRepeat(QObject *parent) : QObject(parent) {
 	working = false;
-	mDelay = 3000;
+	mDelay = 5000;
 	m_pAudioCapture = new AudioCapture(this);
 	connect(m_pAudioCapture, &AudioCapture::error, this, &AutoRepeat::error);
 	connect(m_pAudioCapture, &AudioCapture::volumeChanged, this, &AutoRepeat::volumeChanged);
@@ -11,9 +11,11 @@ AutoRepeat::AutoRepeat(QObject *parent) : QObject(parent) {
 	connect(m_pAudioRender, &AudioRender::volumeChanged, this, &AutoRepeat::volumeChanged);
 	connect(m_pAudioRender, &AudioRender::finish, [&]() {
 		emit repeatEnd();
-		if (working) {
-			m_pAudioCapture->start();
-		}
+		QTimer::singleShot(mDelay, [&]() {
+			if (working) {
+				m_pAudioCapture->start();
+			}
+		});
 	});
 	m_pSoundAnalysis = new SoundAnalysis(this);
 	connect(m_pSoundAnalysis, &SoundAnalysis::soundStart, this, &AutoRepeat::soundStart);
@@ -21,10 +23,10 @@ AutoRepeat::AutoRepeat(QObject *parent) : QObject(parent) {
 		m_pAudioCapture->stop();
 		emit soundEnd();
 		m_pAudioRender->write(bytearray);
-		QTimer::singleShot(mDelay, [&]() {
+		if (working) {
+			m_pAudioRender->start();
 			emit repeatStart();
-			if (working) m_pAudioRender->start();
-		});
+		}
 	});
 	m_pAudioCapture->bindSoundAnalysis(m_pSoundAnalysis);
 }

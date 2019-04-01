@@ -1,7 +1,7 @@
 #ifndef SOUNDANALYSIS_H
 #define SOUNDANALYSIS_H
 
-#include "global.h"
+#include "Global.h"
 
 class SoundAnalysis : public QObject {
 	Q_OBJECT
@@ -9,7 +9,7 @@ public:
 	explicit SoundAnalysis(QObject *parent = nullptr);
 	~SoundAnalysis();
 
-	static const quint16 maxAmplitude = 32767;
+	static const qint16 maxAmplitude = 32767;
 
 signals:
 	void soundStart();

@@ -1,4 +1,4 @@
-#include "audiorender.h"
+#include "AudioRender.h"
 
 AudioRender::AudioRender(QObject *parent) : QObject(parent) {
 	m_pos = 0;
@@ -41,7 +41,10 @@ void AudioRender::start() {
 		}
 	});
 	connect(m_pAudioRenderThread, &AudioRenderThread::finish, this, &AudioRender::finish);
-	connect(m_pAudioRenderThread, &AudioRenderThread::error, this, &AudioRender::error);
+	connect(m_pAudioRenderThread, &AudioRenderThread::error, [&](const QString &msg) {
+		emit error(msg);
+		emit finish();
+	});
 	connect(m_pAudioRenderThread, &AudioRenderThread::__canQuit, [&]() {
 		m_pThread->quit();
 	});

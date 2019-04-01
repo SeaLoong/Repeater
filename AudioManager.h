@@ -1,8 +1,8 @@
 #ifndef AUDIOMANAGER_H
 #define AUDIOMANAGER_H
 
-#include "audiocapture.h"
-#include "audiorender.h"
+#include "AudioCapture.h"
+#include "AudioRender.h"
 
 class AudioManager : public QObject {
 	Q_OBJECT

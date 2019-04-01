@@ -1,5 +1,7 @@
-#include "widget.h"
+#include "Widget.h"
 #include "ui_widget.h"
+
+#include "MyGlobalShortCut/MyGlobalShortCut.h"
 
 Widget::Widget(QWidget *parent) :
 	QWidget(parent),
@@ -14,7 +16,7 @@ Widget::Widget(QWidget *parent) :
 
 	m_pAudioManager = new AudioManager(this);
 	connect(m_pAudioManager, &AudioManager::error, [this](const QString &msg) {
-		QMessageBox::warning(this, "Error:", msg);
+		QMessageBox::warning(this, "Error", msg);
 	});
 	connect(m_pAudioManager, &AudioManager::volumeChanged, [this](double level) {
 		area->setLevel(level);
@@ -44,6 +46,16 @@ Widget::Widget(QWidget *parent) :
 	connect(ui->pushButton_aboutQt, &QPushButton::clicked, [&]() {
 		QMessageBox::aboutQt(this, "About Qt - Repeater");
 	});
+
+	MyGlobalShortCut *shortcutF9 = new MyGlobalShortCut("F9", this);
+	connect(shortcutF9, &MyGlobalShortCut::activated, [&]() {
+		on_pushButton_capture_clicked();
+	});
+
+	MyGlobalShortCut *shortcutF10 = new MyGlobalShortCut("F10", this);
+	connect(shortcutF10, &MyGlobalShortCut::activated, [&]() {
+		on_pushButton_play_clicked();
+	});
 }
 
 Widget::~Widget() {
@@ -51,42 +63,48 @@ Widget::~Widget() {
 }
 
 void Widget::on_pushButton_capture_clicked() {
+	if (!ui->pushButton_capture->isEnabled()) return;
 	ui->pushButton_capture->setVisible(false);
 	capturing = !capturing;
-	ui->checkBox_auto->setEnabled(!capturing);
 	ui->pushButton_play->setEnabled(!capturing);
+	ui->checkBox_auto->setEnabled(!capturing);
+	ui->label->setEnabled(!capturing);
+	ui->label_2->setEnabled(!capturing);
+	ui->spinBox_delay->setEnabled(!capturing);
 	if (capturing) m_pAudioManager->startCapture();
 	else m_pAudioManager->stopCapture();
 	if (capturing) {
-		ui->pushButton_capture->setText("停止");
+		ui->pushButton_capture->setText("停止(F9)");
 		ui->label_status->setText("Capturing...");
 	} else {
-		ui->pushButton_capture->setText("捕获");
+		ui->pushButton_capture->setText("捕获(F9)");
 		ui->label_status->setText("Capture End");
 		if (ui->checkBox_autoPlay->isChecked()) {
 			ui->label_status->setText("Wait to Play...");
-			QTimer::singleShot(ui->spinBox_delay->value(), [&]() {
-				if (!playing) {
-					on_pushButton_play_clicked();
-				}
-			});
+			if (!playing) {
+				on_pushButton_play_clicked();
+			}
 		}
 	}
 	ui->pushButton_capture->setVisible(true);
 }
 
 void Widget::on_pushButton_play_clicked() {
+	if (!ui->pushButton_play->isEnabled()) return;
 	ui->pushButton_play->setVisible(false);
 	playing = !playing;
-	ui->checkBox_auto->setEnabled(!playing);
 	ui->pushButton_capture->setEnabled(!playing);
+	ui->checkBox_auto->setEnabled(!playing);
+	ui->label->setEnabled(!playing);
+	ui->label_2->setEnabled(!playing);
+	ui->spinBox_delay->setEnabled(!playing);
 	if (playing) m_pAudioManager->startRender();
 	else m_pAudioManager->stopRender();
 	if (playing) {
-		ui->pushButton_play->setText("停止");
+		ui->pushButton_play->setText("停止(F10)");
 		ui->label_status->setText("Playing");
 	} else {
-		ui->pushButton_play->setText("播放");
+		ui->pushButton_play->setText("播放(F10)");
 		ui->label_status->setText("Stop Play");
 	}
 	ui->pushButton_play->setVisible(true);
@@ -95,15 +113,12 @@ void Widget::on_pushButton_play_clicked() {
 void Widget::on_checkBox_auto_clicked(bool checked) {
 	ui->checkBox_auto->setVisible(false);
 	ui->checkBox_autoPlay->setEnabled(!checked);
+	ui->label->setEnabled(!checked);
+	ui->label_2->setEnabled(!checked);
+	ui->spinBox_delay->setEnabled(!checked);
 	if (checked) {
-		ui->label->setEnabled(false);
-		ui->label_2->setEnabled(false);
-		ui->spinBox_delay->setEnabled(false);
 		ui->checkBox_autoPlay->setChecked(true);
 	} else {
-		ui->label->setEnabled(ap_checked);
-		ui->label_2->setEnabled(ap_checked);
-		ui->spinBox_delay->setEnabled(ap_checked);
 		ui->checkBox_autoPlay->setChecked(ap_checked);
 	}
 	ui->pushButton_capture->setEnabled(!checked);
@@ -120,10 +135,5 @@ void Widget::on_checkBox_auto_clicked(bool checked) {
 }
 
 void Widget::on_checkBox_autoPlay_clicked(bool checked) {
-	ui->checkBox_autoPlay->setVisible(false);
-	ui->label->setEnabled(checked);
-	ui->label_2->setEnabled(checked);
-	ui->spinBox_delay->setEnabled(checked);
 	ap_checked = checked;
-	ui->checkBox_autoPlay->setVisible(true);
 }

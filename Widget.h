@@ -4,10 +4,10 @@
 #include <QWidget>
 #include <QMessageBox>
 #include <QThread>
-#include "renderarea.h"
+#include "RenderArea.h"
 
-#include "audiomanager.h"
-#include "autorepeat.h"
+#include "AudioManager.h"
+#include "AutoRepeat.h"
 
 namespace Ui {
 	class Widget;
@@ -36,7 +36,7 @@ private:
 
 	AutoRepeat *m_pAutoRepeat;
 
-	bool capturing, playing;
+	bool capturing, playing, autoing;
 	bool ap_checked;
 };
 
